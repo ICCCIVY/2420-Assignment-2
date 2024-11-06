@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# This script will use if statement.
+
+# Check if ~/bin exists and is a symbolic link and if not exist create a symbolic link for ~/bin that points to assignment_2/bin.
+# https://realtechtalk.com/bash_how_to_check_if_a_symlink_exists_as_a_file_or_directory-1843-articles (Reference for checking if a file is a symlink)
+
+if [[ -L ~/bin ]]; then
+  echo "There is an existing symbolic link already."
+else
+  ln -s "/home/arch/assignment_2/bin" ~/bin
+  echo "Symbolic link has been created."
+fi
+
+# Link for the config directory, same logic as above, this time points to assignment_2/config.
+if [[ -L ~/.config ]]; then
+  echo "There is an existing symbolic link already."
+else
+  ln -s ~/assignment_2/config ~/.config
+  echo "Symbolic link has been created."
+fi
+
+# Link for the bashrc file
+if [[ -L ~/.bashrc ]]; then
+  echo "There is an existing symbolic link already."
+else
+  ln -s ~/assignment_2/home/bashrc ~/.bashrc
+  echo "Symbolic link has been created."
+fi

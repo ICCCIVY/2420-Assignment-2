@@ -1,0 +1,45 @@
+#!/bin/bash
+# In this script, I will call the two other script by using getopts to provide user options: do you want to install packages or create symbolic link.
+
+#Check if the user has root privileges to run the script.
+#https://www.baeldung.com/linux/check-script-run-root
+if [[ $EUID -ne 0 ]]; then
+    echo "Please run this script as a root user."
+    exit 1
+fi
+
+#Implement a usage that provides users with a quick guide on how to run the script
+usage() {
+    echo "Usage: $0 [-i] [-s]" #$0 output the name of the script
+    echo "Options:"
+    echo "  -i    Install packages"
+    echo "  -s    Create symbolic links"
+    exit 1
+}
+
+# status code of 1 happens if the user enters an invalid option or no options.
+
+
+# Check options using getopts
+while getopts "is" opt; do
+    case $opt in
+        i)
+            # If the option -i is given, the script calls ./install
+            ./install
+            ;;
+        s)
+            # If the option -s is given, the script calls ./symbolic_link
+            ./symbolic_link
+            ;;
+        *)
+            # If the user did not give an valid option
+            echo "Invalid option. Use -i to install packages or -s to create symbolic links."
+            exit 1
+            ;;
+    esac
+done
+
+# If user did not give any option, calls the usage function to show the instruction
+if [ $OPTIND -eq 1 ]; then
+    usage
+fi
