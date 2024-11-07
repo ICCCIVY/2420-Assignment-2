@@ -1,0 +1,62 @@
+#!/bin/bash
+
+
+# Implement a usuage function to display usage instructions
+usage() {
+    echo "Usage: $0 [-u] [-s] [-g]" 
+    echo "  -u    Specify the username for the new user."
+    echo "  -s    Specify the shell (e.g., /bin/bash, /bin/zsh)."
+    echo "  -g    Specify additional groups for the new user."
+    exit 1
+}
+
+while getopts "u:s:g:" opt; do # all options requre an argument 
+    case ${opt} in
+        u) 
+        username="${OPTARG}" 
+        ;;
+        s) 
+        shell="${OPTARG}" 
+        ;;
+        g) 
+        groups="${OPTARG}" 
+        ;;
+        *) usage 
+        ;;
+    esac
+done
+
+
+# Use an if statement to check if the username is provided, if not, print an error message and calls the usage function to display the correct usage.
+if [[ -z $username ]]; then
+  echo "Error: Username is required."
+  usage
+fi
+
+# To avoid duplicate usernames, we need to check if the user already exists
+# Use grep to search for the username in /etc/passwd file. 
+if grep -q "^$username:" /etc/passwd; then
+    echo "Error: User '$username' already exists." 
+    exit 1
+fi
+
+# Use an if statement to check if the shell is provided, if not, print an error message and calls the usage function to display the correct usage.
+if [[ -z $shell ]]; then
+  echo "Error: Shell is required."
+  usage
+fi
+
+# define a varible home_dir for home directory if the directory is unset
+if [[ -z $home_dir ]]; then
+  home_dir="/home/$username"
+fi
+
+
+mkdir -p "$home_dir"
+cp -r /etc/skel/. "$home_dir/"
+
+
+# Use passwd utility to set password for the new user
+passwd "$username"
+echo "Password has been set for $username."
+
