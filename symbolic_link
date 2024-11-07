@@ -34,38 +34,3 @@ fi
 
 
 
-# Link for ~/.config directory
-if [[ -L ~/.config ]]; then
-    echo "Symbolic link already exists: ~/.config -> $(readlink ~/.config)"
-else
-    ln -s ~/assignment_2/config ~/.config
-    echo "Successfully created symlink: ~/.config -> ~/assignment_2/config"
-fi
-
-# Link for ~/.config/kak/kakrc file
-if [[ -L ~/.config/kak/kakrc ]]; then
-    echo "Symbolic link already exists: ~/.config/kak/kakrc -> $(readlink ~/.config/kak/kakrc)"
-else
-    mkdir -p ~/.config/kak
-    ln -s ~/assignment_2/config/kak/kakrc ~/.config/kak/kakrc
-    echo "Successfully created symlink: ~/.config/kak/kakrc -> ~/assignment_2/config/kak/kakrc"
-fi
-
-# Link for ~/.config/tmux/tmux.conf file
-if [[ -L ~/.config/tmux/tmux.conf ]]; then
-    echo "Symbolic link already exists: ~/.config/tmux/tmux.conf -> $(readlink ~/.config/tmux/tmux.conf)"
-else
-    mkdir -p ~/.config/tmux
-    ln -s ~/assignment_2/config/tmux/tmux.conf ~/.config/tmux/tmux.conf
-    echo "Successfully created symlink: ~/.config/tmux/tmux.conf -> ~/assignment_2/config/tmux/tmux.conf"
-fi
-
-# Link for ~/.bashrc file
-if [[ -L ~/.bashrc ]]; then
-    echo "Symbolic link already exists: ~/.bashrc -> $(readlink ~/.bashrc)"
-else
-    ln -s ~/assignment_2/home/bashrc ~/.bashrc
-    echo "Successfully created symlink: ~/.bashrc -> ~/assignment_2/home/bashrc"
-fi
-
-echo "Symbolic link creation completed successfully."

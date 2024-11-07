@@ -8,7 +8,7 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
-#Implement a usage that provides users with a quick guide on how to run the script
+#Implement a usage function that provides users with a quick guide on how to run the script
 usage() {
     echo "Usage: $0 [-i] [-s]" #$0 output the name of the script
     echo "Options:"

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+
+# Implement a usuage function to display usage instructions
+usage() {
+    echo "Usage: $0 [-u] [-s] [-g]" 
+    echo "  -u    Specify the username for the new user."
+    echo "  -s    Specify the shell (e.g., /bin/bash, /bin/zsh)."
+    echo "  -g    Specify additional groups for the new user."
+    exit 1
+}
