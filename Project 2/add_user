@@ -3,14 +3,15 @@
 
 # Implement a usuage function to display usage instructions
 usage() {
-    echo "Usage: $0 [-u] [-s] [-g]" 
+    echo "Usage: $0 [-u] [-s] [-h] [-g]" 
     echo "  -u    Specify the username for the new user."
     echo "  -s    Specify the shell (e.g., /bin/bash, /bin/zsh)."
+    echo "  -h    Specify the home directory for the new user."
     echo "  -g    Specify additional groups for the new user."
     exit 1
 }
 
-while getopts "u:s:g:" opt; do # all options requre an argument 
+while getopts "u:s:h:g:" opt; do # all options requre an argument 
     case ${opt} in
         u) 
         username="${OPTARG}" 
@@ -18,10 +19,13 @@ while getopts "u:s:g:" opt; do # all options requre an argument
         s) 
         shell="${OPTARG}" 
         ;;
+        h)
+        home_dir="${OPTARG}"
         g) 
         groups="${OPTARG}" 
         ;;
-        *) usage 
+        *) 
+        usage 
         ;;
     esac
 done
@@ -51,7 +55,29 @@ if [[ -z $home_dir ]]; then
   home_dir="/home/$username"
 fi
 
+# Generate uid and gid for the new user
+# Use cut to extract the third field from /etc/passwd, which is uid. Sort the output numerically, and get the last line to get the highest uid.
+uid=$(cut -d: -f3 /etc/passwd | sort -n | tail -n 1)
+# Increment the uid by 1 to get a unique uid for the new user
+uid=$((uid + 1))
+gid=$uid
 
+# Create a unique primary group for the new user, usually the same as the username
+if ! grep -q "^$username:" /etc/group; then 
+# Use grep to search the /etc/group file to see if a group name same as the username already exists. ^ is used to match the start of the line.
+    echo "$username:x:$gid:" >> /etc/group 
+    # print the group name, x is place holder for group password and GID.
+    echo "Primary group '$username' created."
+fi
+
+
+
+# appened the user entry to /etc/passwd
+echo "$username:x:$uid:$gid::$home_dir:$shell" >> /etc/passwd
+echo "User '$username' added to /etc/passwd."
+
+# Create a directory for the new user and 
+# Copy the contents of /etc/skel to the new user's home directory
 mkdir -p "$home_dir"
 cp -r /etc/skel/. "$home_dir/"
 
@@ -60,3 +86,21 @@ cp -r /etc/skel/. "$home_dir/"
 passwd "$username"
 echo "Password has been set for $username."
 
+
+# If additional groups are provided, process and add the user to them
+if [[ -n $groups ]]; then # Check if the groups variable is not empty
+    # Split the groups string into an array
+    IFS=',' read -r -a group_array <<< "$groups" # If there is a comma, input string will be split into parts therefore there will be an array created.
+
+    for group in "${group_array[@]}"; do # Now we can loop through the group array that we created
+        # Check if the group exists in /etc/group
+        if grep -q "^$group:" /etc/group; then # if the group exists in /etc/group file
+            sed -i "/^$group:/ s/$/,$username/" /etc/group # Add the user to the existing group
+        else
+            # Create a new group with an incremented GID
+            new_gid=$(( $(cut -d: -f3 /etc/group | sort -n | tail -n 1) + 1 ))
+            echo "$group:x:$new_gid:$username" >> /etc/group
+        fi
+        echo "User '$username' added to group '$group'."
+    done
+fi
