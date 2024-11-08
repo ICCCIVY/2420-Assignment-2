@@ -3,7 +3,7 @@
 
 # Implement a usuage function to display usage instructions
 usage() {
-    echo "Usage: $0 [-u] [-s] [-h] [-g]" 
+    echo "Usage: $0 [-u] [-s] [-h] [-g group1 group2...]" 
     echo "  -u    Specify the username for the new user."
     echo "  -s    Specify the shell (e.g., /bin/bash, /bin/zsh)."
     echo "  -h    Specify the home directory for the new user."
@@ -21,6 +21,7 @@ while getopts "u:s:h:g:" opt; do # all options requre an argument
         ;;
         h)
         home_dir="${OPTARG}"
+        ;;
         g) 
         groups="${OPTARG}" 
         ;;
@@ -90,9 +91,8 @@ echo "Password has been set for $username."
 # If additional groups are provided, process and add the user to them
 if [[ -n $groups ]]; then # Check if the groups variable is not empty
     # Split the groups string into an array
-    IFS=',' read -r -a group_array <<< "$groups" # If there is a comma, input string will be split into parts therefore there will be an array created.
 
-    for group in "${group_array[@]}"; do # Now we can loop through the group array that we created
+    for group in $groups; do # Now we can loop through the group array that we created
         # Check if the group exists in /etc/group
         if grep -q "^$group:" /etc/group; then # if the group exists in /etc/group file
             sed -i "/^$group:/ s/$/,$username/" /etc/group # Add the user to the existing group
