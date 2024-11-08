@@ -33,7 +33,7 @@ Verify Links:
 ![link](assets/verify_link.png)
 
 ## Script 3: main script
-The main script act as a caller script by using getops tp provide user two option: 
+The main script act as a caller script by using getopts to provide user two option: 
 1. Install packages 
 2. Create symbolic link. 
 

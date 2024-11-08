@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Check for root privileges to run the script.  
+if [[ $EUID -ne 0 ]]; then
+    echo "Please run this script as a root user."
+    exit 1
+fi
 
 # Implement a usuage function to display usage instructions
 usage() {
@@ -90,8 +95,6 @@ echo "Password has been set for $username."
 
 # If additional groups are provided, process and add the user to them
 if [[ -n $groups ]]; then # Check if the groups variable is not empty
-    # Split the groups string into an array
-
     for group in $groups; do # Now we can loop through the group array that we created
         # Check if the group exists in /etc/group
         if grep -q "^$group:" /etc/group; then # if the group exists in /etc/group file
