@@ -20,9 +20,9 @@ usage() {
 # status code of 1 happens if the user enters an invalid option or no options.
 
 
-# Check options using getopts
+# Parsing options using getopts
 while getopts "is" opt; do
-    case $opt in
+    case $opt  in
         i)
             # If the option -i is given, the script calls ./install
             ./install
