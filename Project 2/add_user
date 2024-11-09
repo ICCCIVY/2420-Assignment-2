@@ -98,7 +98,7 @@ if [[ -n $groups ]]; then # Check if the groups variable is not empty
     for group in $groups; do # Now we can loop through the group array that we created
         # Check if the group exists in /etc/group
         if grep -q "^$group:" /etc/group; then # if the group exists in /etc/group file
-            sed -i "/^$group:/ s/$/,$username/" /etc/group # Add the user to the existing group
+            sed -i "/^$group:/ s/$/,$username/" /etc/group # -i edit the file in place, Use sed Match the line that starts with the group name. Append the username to the end of the line. https://www.geeksforgeeks.org/sed-command-in-linux-unix-with-examples/
         else
             # Create a new group with an incremented GID
             new_gid=$(( $(cut -d: -f3 /etc/group | sort -n | tail -n 1) + 1 ))

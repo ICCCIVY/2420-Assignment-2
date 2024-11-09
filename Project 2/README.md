@@ -19,7 +19,7 @@ sudo ./add_user -u Ivy -s /bin/bash
 ```
 ![user](assets/user.png)
 
-V
+
 
 
 
